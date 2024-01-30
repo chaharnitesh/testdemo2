@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch Query Parameters with AJAX</title>
+</head>
+<body>
+
+    <h1>Fetching Query Parameters</h1>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Get the current URL
+            const currentUrl = window.location.href;
+
+            // Create a URLSearchParams object to handle query parameters
+            const urlParams = new URLSearchParams(window.location.search);
+
+            // Extract query parameters
+            const serial = urlParams.get('serial');
+            const timestamp = urlParams.get('timestamp');
+           
+            const signature = urlParams.get('signature');
+           
+
+            // Display the extracted parameters (for demonstration purposes)
+            console.log("Serial:", serial);
+            console.log("timestamp:", timestamp);
+            console.log("Signature:", signature);
+           
+
+            // Use AJAX to send parameters to the backend
+            const apiUrl = "https://demobrand.ciphercode.co/api/v1/authentication/";
+            const xhr = new XMLHttpRequest();
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        // Handle successful response from the backend
+                        const responseData = JSON.parse(xhr.responseText);
+                        console.log("Backend Response:", responseData);
+
+                        // Display success or error message to the user
+                        if (responseData.message) {
+                            alert(responseData.message);
+                        } else if (responseData.Error) {
+                            alert(responseData.Error);
+                        }
+                    } else {
+                        // Handle errors from the backend
+                        console.log("Error fetching data from backend. Status:", xhr.status);
+                    }
+                }
+            };
+
+            xhr.open("POST", apiUrl, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+
+            // Send the parameters as JSON in the request body
+            const requestBody = JSON.stringify({
+                serial: serial,
+                timestamp: timestamp,
+                signature: signature,
+    
+            });
+
+            xhr.send(requestBody);
+        });
+    </script>
+
+</body>
+</html>
